@@ -1,0 +1,19 @@
+{
+  "name": "HTML to Design",
+  "id": "1574335668949121920",
+  "api": "1.0.0",
+  "main": "dist/code.js",
+  "capabilities": [],
+  "enableProposedApi": false,
+  "documentAccess": "dynamic-page",
+  "editorType": [
+    "figma"
+  ],
+  "ui": "ui.html",
+  "networkAccess": {
+    "allowedDomains": [
+      "*"
+    ],
+    "reasoning": "Importing user-pasted HTML may reference assets (images, fonts, CSS) on arbitrary domains. Allowing all domains enables fetching those resources on explicit user action. No network requests are made without user intent."
+  }
+}

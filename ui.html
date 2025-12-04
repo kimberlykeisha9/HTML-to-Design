@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>HTML → Figma</title>
+    <style>
+      :root { 
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", sans-serif; 
+        --primary: #5e5ce6;
+        --primary-dark: #4c4ac6;
+        --danger: #d84040;
+        --bg: #fafafa;
+        --border: #e8e8e8;
+        --text-primary: #222;
+        --text-secondary: #666;
+        --text-muted: #999;
+      }
+      * { box-sizing: border-box; }
+      body { 
+        margin: 0;
+        padding: 16px;
+        font-size: 13px;
+        color: var(--text-primary);
+        background: var(--bg);
+        line-height: 1.5;
+      }
+      h4 {
+        margin: 0 0 8px 0;
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--text-primary);
+      }
+      textarea { 
+        width: 100%;
+        height: 200px;
+        margin-bottom: 12px;
+        padding: 12px;
+        font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+        font-size: 12px;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        resize: vertical;
+        background: white;
+        color: var(--text-primary);
+        transition: border-color 0.2s;
+      }
+      textarea:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(94, 92, 230, 0.1);
+      }
+      textarea::placeholder {
+        color: var(--text-muted);
+      }
+      .row { 
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+      button { 
+        padding: 8px 16px;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 500;
+        border: none;
+        border-radius: 6px;
+        background: var(--primary);
+        color: white;
+        transition: all 0.2s;
+      }
+      button:hover {
+        background: var(--primary-dark);
+        box-shadow: 0 2px 8px rgba(94, 92, 230, 0.2);
+      }
+      button:active {
+        transform: translateY(1px);
+      }
+      #clearBtn {
+        background: #f0f0f0;
+        color: var(--text-primary);
+      }
+      #clearBtn:hover {
+        background: #e0e0e0;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+      }
+      .meta { 
+        color: var(--text-secondary);
+        font-size: 12px;
+        margin-top: 10px;
+        line-height: 1.6;
+      }
+      .meta strong {
+        color: var(--text-primary);
+        font-weight: 600;
+      }
+      .meta code {
+        background: #f5f5f5;
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-family: monospace;
+        font-size: 11px;
+      }
+      .section {
+        margin-bottom: 14px;
+        padding: 12px;
+        background: white;
+        border-radius: 6px;
+        border: 1px solid var(--border);
+      }
+      .section-title {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 10px;
+      }
+      .viewport-inputs {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+      .viewport-inputs span {
+        color: var(--text-secondary);
+        font-size: 12px;
+      }
+      input[type=text] { 
+        width: 80px;
+        padding: 8px 10px;
+        font-size: 13px;
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        background: white;
+        color: var(--text-primary);
+        transition: border-color 0.2s;
+      }
+      input[type=text]:focus {
+        outline: none;
+        border-color: var(--primary);
+      }
+      input[type=checkbox] {
+        cursor: pointer;
+        accent-color: var(--primary);
+      }
+      label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        font-weight: 500;
+        color: var(--text-primary);
+      }
+      #fontWarning {
+        display: none;
+        padding: 12px;
+        background: #fce4e4;
+        border-left: 4px solid var(--danger);
+        border-radius: 4px;
+        color: var(--danger);
+        font-weight: 500;
+        margin-bottom: 12px;
+      }
+      .feature-list {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-top: 8px;
+        font-size: 12px;
+      }
+      .feature-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 6px;
+        color: var(--text-secondary);
+      }
+      .feature-item::before {
+        content: "✓";
+        color: #22c55e;
+        font-weight: bold;
+        flex-shrink: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <h4>HTML → Figma</h4>
+    <div class="meta">
+      Convert your HTML/CSS designs to editable Figma components with full style fidelity.
+    </div>
+
+    <textarea id="htmlInput" placeholder="Paste your complete HTML (with &lt;style&gt;, &lt;link&gt;, &lt;script&gt;) here..."></textarea>
+
+    <div id="fontWarning"></div>
+
+    <div class="section">
+      <div class="section-title">Options</div>
+      <div class="row">
+        <label><input id="autoLayout" type="checkbox"> Use Auto Layout</label>
+        <span style="margin-left: auto; color: var(--text-muted); font-size: 11px;">Converts flex/grid to Figma auto layout</span>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Viewport</div>
+      <div class="viewport-inputs">
+        <span>Width:</span>
+        <input id="viewportWidth" type="text" value="1920" />
+        <span style="margin-left: 12px;">Height:</span>
+        <input id="viewportHeight" type="text" value="1080" />
+      </div>
+    </div>
+
+    <div class="row">
+      <button id="importBtn">Import to Figma</button>
+      <button id="clearBtn">Clear</button>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Supported Features</div>
+      <div class="feature-list">
+        <div class="feature-item">CSS Gradients</div>
+        <div class="feature-item">Transforms</div>
+        <div class="feature-item">Flex Layouts</div>
+        <div class="feature-item">Grid Layouts</div>
+        <div class="feature-item">Box Shadows</div>
+        <div class="feature-item">Border Radius</div>
+        <div class="feature-item">Opacity</div>
+        <div class="feature-item">Google Fonts</div>
+        <div class="feature-item">Images</div>
+        <div class="feature-item">Backgrounds</div>
+      </div>
+    </div>
+
+    <div class="meta" style="margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border);">
+      CSS can be inline or imported via <code>&lt;link&gt;</code>. Missing fonts will be substituted and listed above. All assets are fetched and embedded automatically.
+    </div>
+
+    <script>
+      // Inline UI controller to work when HTML is inlined via showUI(html)
+      (function(){
+        var importBtn = document.getElementById('importBtn');
+        var clearBtn = document.getElementById('clearBtn');
+        var htmlInput = document.getElementById('htmlInput');
+        var autoLayoutCheckbox = document.getElementById('autoLayout');
+        var viewportWidthInput = document.getElementById('viewportWidth');
+        var viewportHeightInput = document.getElementById('viewportHeight');
+        var fontWarning = document.getElementById('fontWarning');
+        var FETCH_TIMEOUT = 5000;
+        var imageCache = new Map();
+        var fontMessages = [];
+
+        function clearFontMessages(){
+          fontMessages = [];
+          if (fontWarning){
+            fontWarning.textContent = '';
+            fontWarning.style.display = 'none';
+          }
+        }
+
+        function pushFontMessage(message){
+          if (!message) return;
+          fontMessages.push(message);
+          if (fontWarning){
+            fontWarning.textContent = fontMessages.join(' | ');
+            fontWarning.style.display = 'block';
+          }
+        }
+
+        function arrayBufferToBase64(buffer){
+          var binary = '';
+          var bytes = new Uint8Array(buffer);
+          for (var i=0;i<bytes.byteLength;i++){ binary += String.fromCharCode(bytes[i]); }
+          return btoa(binary);
+        }
+
+        function isDataUrl(url){
+          return /^data:/i.test(url || '');
+        }
+
+        function extractBackgroundUrl(value){
+          if (!value) return null;
+          var match = value.match(/url\((['"]?)(.+?)\1\)/i);
+          if (!match) return null;
+          var candidate = match[2].trim();
+          if (!/^https?:/i.test(candidate) || isDataUrl(candidate)) return null;
+          return { match: match[0], url: candidate };
+        }
+
+        function cachedFetchDataUrl(url){
+          if (imageCache.has(url)) return imageCache.get(url);
+          var promise = (async function(){
+            var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+            var timeoutId;
+            try {
+              if (controller) timeoutId = setTimeout(function(){ controller.abort(); }, FETCH_TIMEOUT);
+              var resp = await fetch(url, controller ? { signal: controller.signal, mode: 'cors' } : { mode: 'cors' });
+              if (timeoutId) clearTimeout(timeoutId);
+              if (!resp || !resp.ok) throw new Error('status ' + (resp && resp.status));
+              var contentType = resp.headers.get('content-type') || 'application/octet-stream';
+              var buffer = await resp.arrayBuffer();
+              var base64 = arrayBufferToBase64(buffer);
+              return 'data:' + contentType + ';base64,' + base64;
+            } catch (err) {
+              console.warn('Failed to fetch asset', url, err);
+              return null;
+            }
+          })();
+          imageCache.set(url, promise);
+          return promise;
+        }
+
+        async function embedExternalAssets(nodes){
+          async function visit(node){
+            if (!node || node.kind !== 'element') return;
+            if (node.attrs && node.attrs.src && /^https?:/i.test(node.attrs.src) && !isDataUrl(node.attrs.src)){
+              var originalSrc = node.attrs.src;
+              var dataUri = await cachedFetchDataUrl(originalSrc);
+              if (dataUri) node.attrs.src = dataUri;
+              else node.attrs['data-image-error'] = originalSrc;
+            }
+            if (node.style && node.style['background-image']){
+              var info = extractBackgroundUrl(node.style['background-image']);
+              if (info){
+                var bgData = await cachedFetchDataUrl(info.url);
+                if (bgData) node.style['background-image'] = node.style['background-image'].replace(info.match, 'url("' + bgData + '")');
+                else node.style['--image-error'] = info.url;
+              }
+            }
+            if (node.children && node.children.length){
+              await Promise.all(node.children.map(visit));
+            }
+          }
+          await Promise.all(nodes.map(visit));
+        }
+
+        function safePost(message){
+          parent.postMessage({ pluginMessage: message }, '*');
+        }
+
+        function pickComputedStyle(win, el){
+          var cs = win.getComputedStyle(el);
+          var style = {};
+          var keys = [
+            'color','font-family','font-size','font-weight','font-style','text-decoration','line-height','letter-spacing','text-align','text-transform',
+            'background-color','background-image','background-size','background-position',
+            'border','border-color','border-width','border-style','border-radius','border-top-left-radius','border-top-right-radius','border-bottom-right-radius','border-bottom-left-radius',
+            'box-shadow','display','flex-direction','justify-content','align-items','gap','row-gap','column-gap','opacity','width','height',
+            'margin','margin-top','margin-right','margin-bottom','margin-left','padding','padding-top','padding-right','padding-bottom','padding-left',
+            'position','top','right','bottom','left','z-index','transform','transform-origin',
+            'grid-template-columns','grid-template-rows','grid-column','grid-row','grid-gap','grid-auto-flow'
+          ];
+          for (var i=0;i<keys.length;i++){
+            var k = keys[i];
+            var v = cs.getPropertyValue(k);
+            if (v) style[k] = v.trim();
+          }
+          return style;
+        }
+
+        function nodeToJsonComputed(win, node){
+          if (node.nodeType === Node.TEXT_NODE){
+            var text = (node.textContent || '').replace(/\s+/g,' ').trim();
+            if (!text) return null;
+            return { kind:'text', text: text };
+          }
+          if (node.nodeType !== Node.ELEMENT_NODE) return null;
+          var el = node;
+          var tag = el.tagName.toLowerCase();
+          // Skip script/style/head/meta/link for safety
+          if (tag === 'script' || tag === 'style' || tag === 'link' || tag === 'meta' || tag === 'head') return null;
+          var attrs = {};
+          for (var j=0;j<el.attributes.length;j++){
+            var a = el.attributes[j];
+            attrs[a.name] = a.value;
+          }
+          var style = pickComputedStyle(win, el);
+          var children = [];
+          for (var k=0;k<el.childNodes.length;k++){
+            var child = nodeToJsonComputed(win, el.childNodes[k]);
+            if (child) children.push(child);
+          }
+          return { kind:'element', tag: tag, attrs: attrs, style: style, children: children };
+        }
+
+        function buildPayloadComputed(raw, viewport){
+          return new Promise(function(resolve){
+            var iframe = document.createElement('iframe');
+            iframe.style.position = 'fixed';
+            iframe.style.left = '-99999px';
+            iframe.style.top = '-99999px';
+            if (viewport && viewport.width) iframe.style.width = viewport.width + 'px';
+            if (viewport && viewport.height) iframe.style.height = viewport.height + 'px';
+            // Remove sandbox to allow external scripts like Tailwind CDN to run
+            document.body.appendChild(iframe);
+            
+            // Write to iframe document directly for better script execution
+            var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+            iframeDoc.open();
+            iframeDoc.write(raw);
+            iframeDoc.close();
+            
+            var done = function(){
+              try {
+                var win = iframe.contentWindow;
+                var doc = iframe.contentDocument || win.document;
+                if (!win || !doc) { console.error('No window or doc'); resolve([]); return; }
+                var out = [];
+                var body = doc.body;
+                if (!body) { console.error('No body found'); resolve([]); return; }
+                console.log('Body children count:', body.childNodes.length);
+                for (var i=0;i<body.childNodes.length;i++){
+                  var node = nodeToJsonComputed(win, body.childNodes[i]);
+                  if (node) {
+                    console.log('Parsed node:', node.kind, node.kind === 'element' ? node.tag : '');
+                    out.push(node);
+                  }
+                }
+                console.log('Total nodes parsed:', out.length);
+                resolve(out);
+              } catch(e){ console.error('Error building payload:', e); resolve([]); }
+              setTimeout(function(){ iframe.remove(); }, 0);
+            };
+            
+            // Give scripts time to apply styles
+            setTimeout(done, 800);
+          });
+        }
+
+        if (importBtn){
+          importBtn.onclick = async function(){
+            var raw = (htmlInput && htmlInput.value || '').trim();
+            if (!raw){
+              safePost({ type:'error', message:'Paste some HTML first.' });
+              return;
+            }
+            var vw = parseInt(viewportWidthInput && viewportWidthInput.value || '1920', 10) || 1920;
+            var vh = parseInt(viewportHeightInput && viewportHeightInput.value || '1080', 10) || 1080;
+            clearFontMessages();
+            try {
+              var payload = await buildPayloadComputed(raw, { width: vw, height: vh });
+              await embedExternalAssets(payload);
+              safePost({ type:'import-html', payload: payload, options: { autoLayout: !!(autoLayoutCheckbox && autoLayoutCheckbox.checked), createStyles: true, prototypeLinks: true } });
+            } catch (err) {
+              safePost({ type:'error', message: 'Failed to prepare HTML payload.' });
+              console.error(err);
+            }
+          };
+        }
+        if (clearBtn && htmlInput){
+          clearBtn.onclick = function(){ htmlInput.value = ''; };
+        }
+
+        window.onmessage = function(event){
+          var msg = event.data && event.data.pluginMessage;
+          if (!msg) return;
+          if (msg.type === 'done') alert('Imported to Figma \u2713');
+          else if (msg.type === 'error') alert('Error: ' + (msg.message || 'Unknown error'));
+          else if (msg.type === 'missing-fonts'){
+            var fonts = msg.fonts || [];
+            if (fonts.length) pushFontMessage('Missing fonts: ' + fonts.map(function(f){ return f.family + ' ' + f.style; }).join(', '));
+          } else if (msg.type === 'font-substitutions'){
+            var pairs = msg.items || [];
+            if (pairs.length) pushFontMessage('Substituted fonts: ' + pairs.map(function(p){ return p.original + '→' + p.fallback; }).join(', '));
+          }
+        };
+      })();
+    </script>
+  </body>
+</html>
