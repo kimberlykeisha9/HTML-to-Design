@@ -67,7 +67,7 @@ const BUTTON_TAGS = new Set(['button','input','textarea']);
 const SVG_TAGS = new Set(['svg','path','circle','rect','line','polyline','polygon','ellipse','g','defs','use','symbol','text','tspan']);
 const HEADING_SIZES: Record<string, number> = { h1: 32, h2: 24, h3: 20, h4: 18, h5: 16, h6: 14 };
 
-function escapeXmlAttr(value: string): string {
+export function escapeXmlAttr(value: string): string {
   return value.replaceAll('"', '&quot;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
 }
 
@@ -122,7 +122,7 @@ function fontNameOf(family: string, style: string): FontName {
   return { family, style };
 }
 
-function stripQuotes(value: string): string {
+export function stripQuotes(value: string): string {
   return value.replaceAll(/^['"]+/g, '').replaceAll(/['"]+$/g, '');
 }
 
@@ -231,7 +231,7 @@ function parseGradientPaint(value?: string): GradientPaint | null {
   }
 }
 
-function extractImageReference(value?: string): string | null {
+export function extractImageReference(value?: string): string | null {
   if (!value) return null;
   const urlPattern = /url\((['"]?)(.+?)\1\)/i;
   const match = urlPattern.exec(value);
@@ -545,7 +545,7 @@ function parseColor(v?: string | null) {
   return null;
 }
 
-function parseColorWithAlpha(v?: string | null): { r: number; g: number; b: number; a: number } | null {
+export function parseColorWithAlpha(v?: string | null): { r: number; g: number; b: number; a: number } | null {
   if (!v) return null;
   const s = v.trim().toLowerCase();
   if (s === 'transparent') return { r: 0, g: 0, b: 0, a: 0 };
@@ -597,14 +597,14 @@ function parseColorWithAlpha(v?: string | null): { r: number; g: number; b: numb
   return null;
 }
 
-function parsePx(v?: string) {
+export function parsePx(v?: string) {
   if (!v) return undefined;
   const re = /(-?\d+(?:\.\d+)?)px/;
   const m = re.exec(v.trim());
   return m ? Number(m[1]) : undefined;
 }
 
-function parseNumber(v?: string) {
+export function parseNumber(v?: string) {
   if (!v) return undefined;
   const n = Number(v.trim());
   return Number.isFinite(n) ? n : undefined;
@@ -715,7 +715,7 @@ async function ensureFonts(fonts: { family: string; style: string }[]): Promise<
   return { missing, substitutions };
 }
 
-function resolveFontFamily(style: Record<string, string>): string {
+export function resolveFontFamily(style: Record<string, string>): string {
   const raw = style['font-family'] || '';
   const candidates = raw
     .split(',')
@@ -725,7 +725,7 @@ function resolveFontFamily(style: Record<string, string>): string {
   return 'Inter';
 }
 
-function resolveFontStyleName(style: Record<string, string>): string {
+export function resolveFontStyleName(style: Record<string, string>): string {
   const weightRaw = (style['font-weight'] || '').toLowerCase();
   let weightNum = 400;
   if (/^\d+$/.test(weightRaw)) {

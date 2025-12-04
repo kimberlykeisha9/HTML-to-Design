@@ -6,4 +6,8 @@ module.exports = {
   transform: {
     '^.+\\.(ts)$': ['ts-jest', { tsconfig: 'tsconfig.json' }],
   },
+  moduleNameMapper: {
+    '\\.html$': '<rootDir>/__mocks__/htmlMock.js',
+  },
+  setupFiles: ['<rootDir>/jest.setup.js'],
 };
